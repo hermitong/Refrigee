@@ -1,47 +1,49 @@
-# Product Requirements Document (PRD) - Refrigee
+# 产品需求文档 (PRD) - Refrigee
 
-## 1. Product Overview
-**Product Name:** Refrigee (Smart Fridge Manager)
-**Target Audience:** Office workers and International Students.
-**Core Value:** Reduce food waste and simplify meal planning through smart inventory tracking.
+## 1. 产品概述
+**产品名称:** Refrigee (智能冰箱管理器)
+**目标用户:** 上班族和国际学生。
+**核心价值:** 通过智能库存追踪减少食物浪费并简化膳食规划。
 
-## 2. Core Features (MVP)
+## 2. 核心功能 (MVP版本)
 
-### 2.1 Smart Inventory Recording
-- **User Story:** As a user, I want to quickly record groceries I bought so I know what I have.
-- **Functionality:**
-    - Manual input of Item Name, Quantity, and Weight.
-    - **"AI" Auto-Classification (MVP Mock):** Automatically categorize items (e.g., "Apple" -> "Fruit") and assign a default shelf life based on category.
-    - Manual override for expiration dates.
+### 2.1 智能库存记录
+- **用户故事:** 作为用户，我希望能快速记录购买的食品，这样我就能了解自己有什么。
+- **功能特点:**
+    - 手动输入物品名称、数量和重量。
+    - **"AI" 自动分类 (MVP模拟):** 自动分类物品（例如："苹果" -> "水果"）并根据分类分配默认保质期。
+    - 可手动修改过期日期。
 
-### 2.2 Expiration Reminders
-- **User Story:** As a user, I want to be warned before food goes bad so I can eat it in time.
-- **Functionality:**
-    - Visual indicators for items nearing expiration (e.g., Green > Yellow > Red).
-    - "Expiring Soon" dashboard section.
+### 2.2 过期提醒
+- **用户故事:** 作为用户，我希望能提前收到食品即将变质的通知，这样我就能及时食用。
+- **功能特点:**
+    - 即将过期物品的视觉化指示器（例如：绿色 > 黄色 > 红色）。
+    - "即将过期"仪表板区域。
 
-### 2.3 Recipe Suggestions
-- **User Story:** As a user, I want to know what I can cook with what I have.
-- **Functionality:**
-    - Input: Number of people eating.
-    - Logic: Match available ingredients to a pre-defined list of recipes (MVP).
-    - Output: Suggested dishes.
+### 2.3 食谱推荐
+- **用户故事:** 作为用户，我希望能知道可以用现有的食材做什么菜。
+- **功能特点:**
+    - 输入：用餐人数。
+    - 逻辑：将现有食材与预定义食谱列表进行匹配 (MVP)。
+    - 输出：推荐菜品。
 
-## 3. User Flow
-1.  **Onboarding/Home:** View current inventory summary (Total items, Expiring soon).
-2.  **Add Item:** Click "+" -> Enter details -> System suggests Category/Date -> Confirm.
-3.  **Inventory List:** View all items sorted by expiration date.
-4.  **Recipe Tab:** Select "Cook for X people" -> View suggestions based on inventory.
+## 3. 用户流程
+1.  **首页/主界面:** 查看当前库存概览（总物品数、即将过期物品）。
+2.  **添加物品:** 点击 "+" -> 输入详细信息 -> 系统建议分类/日期 -> 确认。
+3.  **库存列表:** 按过期日期排序查看所有物品。
+4.  **食谱页面:** 选择"几人用餐" -> 基于库存查看建议。
 
-## 4. Technical Constraints & Stack (MVP)
-- **Platform:** Web Application (Responsive Mobile-First).
-- **Tech Stack:**
-    - Framework: React (Vite)
-    - Styling: Tailwind CSS (for rapid, beautiful UI) + Framer Motion (for animations).
-    - Data Persistence: `localStorage` (No backend for MVP to keep it simple and privacy-focused initially).
-    - AI Simulation: Heuristic-based mapping for categories and shelf-life in the frontend code.
+## 4. 技术约束与技术栈 (MVP)
+- **平台:** Web应用程序 (响应式移动优先)。
+- **技术栈:**
+    - 框架: React (Vite)
+    - 样式: Tailwind CSS (快速美观UI) + Framer Motion (动画)。
+    - 数据持久化: `localStorage` (MVP版本不使用后端，保持简单和隐私保护)。
+    - AI模拟: 前端代码中基于启发式映射的分类和保质期算法。
+    - 国际化: 支持中英文切换。
 
-## 5. Future Roadmap (Post-MVP)
-- OCR Receipt Scanning.
-- Real Backend with User Auth.
-- Integration with real LLM API for recipe generation.
+## 5. 未来规划 (MVP后)
+- OCR收据扫描。
+- 真实后端与用户认证。
+- 集成真实LLM API进行食谱生成。
+- 多语言支持扩展。

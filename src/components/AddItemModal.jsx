@@ -3,6 +3,7 @@ import { X, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { predictItemDetails } from '../utils/aiMock';
 import { format } from 'date-fns';
+import { useTranslation } from '../contexts/LanguageContext';
 
 export default function AddItemModal({ isOpen, onClose, onAdd }) {
     const [name, setName] = useState('');
@@ -11,6 +12,7 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
     const [category, setCategory] = useState('');
     const [expirationDate, setExpirationDate] = useState('');
     const [emoji, setEmoji] = useState('📦');
+    const { t } = useTranslation();
 
     // "AI" Auto-complete effect
     useEffect(() => {
@@ -68,7 +70,7 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
                     >
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                                Add Item <span className="text-2xl">{emoji}</span>
+                                {t('addItem.title')} <span className="text-2xl">{emoji}</span>
                             </h2>
                             <button onClick={onClose} className="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200">
                                 <X size={20} />
@@ -77,13 +79,13 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
 
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">{t('addItem.itemName')}</label>
                                 <div className="relative">
                                     <input
                                         type="text"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
-                                        placeholder="e.g. Milk, Apple..."
+                                        placeholder={t('addItem.placeholder')}
                                         className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
                                         autoFocus
                                         required
@@ -96,7 +98,7 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('addItem.quantity')}</label>
                                     <div className="flex">
                                         <input
                                             type="number"
@@ -112,34 +114,34 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
                                             onChange={(e) => setUnit(e.target.value)}
                                             className="bg-gray-100 border-y border-r border-gray-200 rounded-r-xl px-2 text-sm text-gray-600 outline-none"
                                         >
-                                            <option value="pcs">pcs</option>
-                                            <option value="kg">kg</option>
-                                            <option value="g">g</option>
-                                            <option value="L">L</option>
+                                            <option value="pcs">{t('units.pcs')}</option>
+                                            <option value="kg">{t('units.kg')}</option>
+                                            <option value="g">{t('units.g')}</option>
+                                            <option value="l">{t('units.l')}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('addItem.category')}</label>
                                     <select
                                         value={category}
                                         onChange={(e) => setCategory(e.target.value)}
                                         className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
                                     >
-                                        <option value="">Select...</option>
-                                        <option value="Fruit">Fruit</option>
-                                        <option value="Vegetable">Vegetable</option>
-                                        <option value="Dairy">Dairy</option>
-                                        <option value="Meat">Meat</option>
-                                        <option value="Bakery">Bakery</option>
-                                        <option value="Pantry">Pantry</option>
-                                        <option value="Other">Other</option>
+                                        <option value="">{t('addItem.select')}</option>
+                                        <option value="Fruit">{t('categories.fruit')}</option>
+                                        <option value="Vegetable">{t('categories.vegetable')}</option>
+                                        <option value="Dairy">{t('categories.dairy')}</option>
+                                        <option value="Meat">{t('categories.meat')}</option>
+                                        <option value="Bakery">{t('categories.bakery')}</option>
+                                        <option value="Pantry">{t('categories.pantry')}</option>
+                                        <option value="Other">{t('categories.other')}</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">{t('addItem.expirationDate')}</label>
                                 <input
                                     type="date"
                                     value={expirationDate}
@@ -153,7 +155,7 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
                                 type="submit"
                                 className="w-full py-4 bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-600 active:scale-95 transition-all mt-4"
                             >
-                                Add to Fridge
+                                {t('addItem.addToFridge')}
                             </button>
                         </form>
                     </motion.div>

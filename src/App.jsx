@@ -5,6 +5,7 @@ import Inventory from './components/Inventory';
 import Recipes from './components/Recipes';
 import AddItemModal from './components/AddItemModal';
 import { useInventory } from './hooks/useInventory';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -25,18 +26,20 @@ function App() {
   };
 
   return (
-    <Layout
-      activeTab={activeTab}
-      onTabChange={setActiveTab}
-      onAddClick={() => setIsAddModalOpen(true)}
-    >
-      {renderContent()}
-      <AddItemModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onAdd={addItem}
-      />
-    </Layout>
+    <LanguageProvider>
+      <Layout
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onAddClick={() => setIsAddModalOpen(true)}
+      >
+        {renderContent()}
+        <AddItemModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onAdd={addItem}
+        />
+      </Layout>
+    </LanguageProvider>
   );
 }
 

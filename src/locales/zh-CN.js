@@ -1,0 +1,72 @@
+export const zhCN = {
+  // Layout
+  nav: {
+    home: "首页",
+    fridge: "冰箱",
+    recipes: "食谱"
+  },
+
+  // Dashboard
+  dashboard: {
+    greeting: "美好的一天！☀️",
+    subtitle: "这是您冰箱的最新情况。",
+    expiringSoon: "即将过期",
+    allGood: "一切正常",
+    itemsNeedAttention: "件物品需要关注",
+    totalItems: "总共物品",
+    inInventory: "在您的库存中",
+    expiredItems: "件过期物品",
+    checkAndRemove: "请检查并移除它们。",
+    quickActions: "快捷操作",
+    planningMeal: "计划用餐？",
+    getRecipeSuggestions: "获取食谱建议"
+  },
+
+  // Inventory
+  inventory: {
+    title: "我的冰箱 🍎",
+    empty: "您的冰箱是空的。",
+    tapToAdd: "点击 + 添加食品！",
+    expired: "已过期",
+    expiresIn: "还有 {{days}} 天过期"
+  },
+
+  // Recipes
+  recipes: {
+    title: "做什么菜？🍳",
+    cookingForHowMany: "几个人用餐？",
+    readyToCook: "可以烹饪",
+    match: "匹配度"
+  },
+
+  // AddItemModal
+  addItem: {
+    title: "添加物品",
+    itemName: "物品名称",
+    placeholder: "例如：牛奶、苹果...",
+    quantity: "数量",
+    category: "分类",
+    expirationDate: "过期日期",
+    addToFridge: "添加到冰箱",
+    select: "选择..."
+  },
+
+  // Categories
+  categories: {
+    fruit: "水果",
+    vegetable: "蔬菜",
+    dairy: "乳制品",
+    meat: "肉类",
+    bakery: "烘焙",
+    pantry: "储藏",
+    other: "其他"
+  },
+
+  // Units
+  units: {
+    pcs: "个",
+    kg: "公斤",
+    g: "克",
+    l: "升"
+  }
+};

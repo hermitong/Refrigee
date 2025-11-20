@@ -1,7 +1,10 @@
 import { differenceInDays, parseISO, format } from 'date-fns';
 import { Trash2 } from 'lucide-react';
+import { useTranslation } from '../contexts/LanguageContext';
 
 export default function Inventory({ items, onDelete }) {
+    const { t } = useTranslation();
+
     // Sort by expiration date
     const sortedItems = [...items].sort((a, b) =>
         new Date(a.expirationDate) - new Date(b.expirationDate)
@@ -9,21 +12,21 @@ export default function Inventory({ items, onDelete }) {
 
     const getExpirationStatus = (dateStr) => {
         const days = differenceInDays(parseISO(dateStr), new Date());
-        if (days < 0) return { color: 'bg-red-500', text: 'Expired', border: 'border-red-200', bg: 'bg-red-50' };
-        if (days <= 3) return { color: 'bg-red-500', text: `Expires in ${days} days`, border: 'border-red-200', bg: 'bg-red-50' };
-        if (days <= 7) return { color: 'bg-yellow-500', text: `Expires in ${days} days`, border: 'border-yellow-200', bg: 'bg-yellow-50' };
-        return { color: 'bg-green-500', text: `Expires in ${days} days`, border: 'border-gray-100', bg: 'bg-white' };
+        if (days < 0) return { color: 'bg-red-500', text: t('inventory.expired'), border: 'border-red-200', bg: 'bg-red-50' };
+        if (days <= 3) return { color: 'bg-red-500', text: t('inventory.expiresIn', { days }), border: 'border-red-200', bg: 'bg-red-50' };
+        if (days <= 7) return { color: 'bg-yellow-500', text: t('inventory.expiresIn', { days }), border: 'border-yellow-200', bg: 'bg-yellow-50' };
+        return { color: 'bg-green-500', text: t('inventory.expiresIn', { days }), border: 'border-gray-100', bg: 'bg-white' };
     };
 
     return (
         <div className="p-6">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">My Fridge 🍎</h1>
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">{t('inventory.title')}</h1>
 
             {items.length === 0 ? (
                 <div className="text-center py-10 text-gray-400">
                     <p className="text-4xl mb-2">🕸️</p>
-                    <p>Your fridge is empty.</p>
-                    <p className="text-sm">Tap + to add groceries!</p>
+                    <p>{t('inventory.empty')}</p>
+                    <p className="text-sm">{t('inventory.tapToAdd')}</p>
                 </div>
             ) : (
                 <div className="space-y-3">

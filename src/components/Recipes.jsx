@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import { RECIPES } from '../utils/aiMock';
 import { Check, AlertCircle } from 'lucide-react';
+import { useTranslation } from '../contexts/LanguageContext';
 
 export default function Recipes({ items }) {
     const [peopleCount, setPeopleCount] = useState(1);
+    const { t } = useTranslation();
 
     // Helper to check ingredient availability
     const getRecipeMatch = (recipe) => {
         const availableIngredients = recipe.ingredients.filter(ing =>
-            items.some(item => item.name.toLowerCase().includes(ing.toLowerCase()) || item.category === ing)
+            items.some(item => item.name.toLowerCase().includes(ing.toLowerCase()) ||
+                             item.category.toLowerCase() === ing.toLowerCase())
         );
 
         const matchCount = availableIngredients.length;
@@ -25,10 +28,10 @@ export default function Recipes({ items }) {
 
     return (
         <div className="p-6 pb-24">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">What to Cook? 🍳</h1>
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">{t('recipes.title')}</h1>
 
             <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Cooking for how many?</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('recipes.cookingForHowMany')}</label>
                 <div className="flex items-center space-x-4">
                     <button
                         onClick={() => setPeopleCount(Math.max(1, peopleCount - 1))}
@@ -59,14 +62,14 @@ export default function Recipes({ items }) {
                             </div>
                             {recipe.isCookable && (
                                 <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded-full">
-                                    Ready to Cook
+                                    {t('recipes.readyToCook')}
                                 </span>
                             )}
                         </div>
 
                         <div className="mt-3">
                             <div className="flex justify-between text-xs mb-1">
-                                <span className="text-gray-500">Match</span>
+                                <span className="text-gray-500">{t('recipes.match')}</span>
                                 <span className={recipe.percentage === 100 ? 'text-emerald-600 font-bold' : 'text-gray-600'}>{recipe.percentage}%</span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-2">
