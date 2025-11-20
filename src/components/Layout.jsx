@@ -1,4 +1,4 @@
-import { Home, List, ChefHat, Plus } from 'lucide-react';
+import { Home, List, ChefHat, Plus, User } from 'lucide-react';
 import { useTranslation } from '../contexts/LanguageContext';
 
 export default function Layout({ children, activeTab, onTabChange, onAddClick }) {
@@ -47,8 +47,12 @@ export default function Layout({ children, activeTab, onTabChange, onAddClick })
                             onClick={() => onTabChange('recipes')}
                         />
 
-                        {/* Placeholder for symmetry if needed, or just 3 tabs + FAB */}
-                        <div className="w-12"></div>
+                        <NavButton
+                            icon={<User size={24} />}
+                            label={t('nav.profile')}
+                            isActive={activeTab === 'profile'}
+                            onClick={() => onTabChange('profile')}
+                        />
                     </div>
                 </nav>
             </div>

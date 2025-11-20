@@ -3,7 +3,8 @@ export const zhCN = {
   nav: {
     home: "首页",
     fridge: "冰箱",
-    recipes: "食谱"
+    recipes: "食谱",
+    profile: "我的"
   },
 
   // Dashboard
@@ -68,5 +69,29 @@ export const zhCN = {
     kg: "公斤",
     g: "克",
     l: "升"
+  },
+
+  // Profile
+  profile: {
+    title: "我的",
+    welcome: "欢迎回来",
+    loginPrompt: "登录以管理您的冰箱",
+    email: "邮箱",
+    emailPlaceholder: "your@email.com",
+    password: "密码",
+    passwordPlaceholder: "输入密码",
+    login: "登录",
+    logout: "退出登录",
+    forgotPassword: "忘记密码？",
+    noAccount: "还没有账号？",
+    signUp: "注册",
+    member: "会员",
+    stats: "统计数据",
+    itemsAdded: "添加的物品",
+    recipesCooked: "烹饪的食谱",
+    settings: "设置",
+    notifications: "通知设置",
+    language: "语言偏好",
+    privacy: "隐私设置"
   }
 };

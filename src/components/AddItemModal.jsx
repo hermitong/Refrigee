@@ -66,7 +66,7 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
                         animate={{ y: 0 }}
                         exit={{ y: '100%' }}
                         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 z-50 max-w-md mx-auto shadow-2xl"
+                        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 z-50 max-w-md mx-auto shadow-2xl max-h-[90vh] overflow-y-auto"
                     >
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
