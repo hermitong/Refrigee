@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { X, Sparkles, Camera, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { predictItemDetails } from '../utils/aiMock';
-import { classifyItemWithAI, identifyItemFromImage, isAIAvailable } from '../services/geminiService';
 import { format, addDays } from 'date-fns';
+import { useTranslation } from '../contexts/LanguageContext';
 
 export default function AddItemModal({ isOpen, onClose, onAdd }) {
     const [name, setName] = useState('');
@@ -12,8 +12,9 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
     const [category, setCategory] = useState('');
     const [expirationDate, setExpirationDate] = useState('');
     const [emoji, setEmoji] = useState('📦');
-    const [loadingAI, setLoadingAI] = useState(false);
+  const [loadingAI, setLoadingAI] = useState(false);
     const fileInputRef = useRef(null);
+    const { t } = useTranslation();
 
     // AI 自动分类
     useEffect(() => {
@@ -25,76 +26,18 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
     const handleAutoClassify = async () => {
         setLoadingAI(true);
         try {
-            if (isAIAvailable()) {
-                // 使用真实 AI
-                const result = await classifyItemWithAI(name, 'zh');
-                setCategory(result.category);
-                setEmoji(result.emoji);
-                if (!expirationDate) {
-                    const expiry = addDays(new Date(), result.shelfLifeDays);
-                    setExpirationDate(format(expiry, 'yyyy-MM-dd'));
-                }
-            } else {
-                // 降级到 Mock AI
-                const prediction = predictItemDetails(name);
-                setCategory(prediction.category);
-                setEmoji(prediction.emoji);
-                if (!expirationDate) {
-                    setExpirationDate(format(prediction.defaultExpiration, 'yyyy-MM-dd'));
-                }
+            // 降级到 Mock AI
+            const prediction = predictItemDetails(name);
+            setCategory(prediction.category);
+            setEmoji(prediction.emoji);
+            if (!expirationDate) {
+                setExpirationDate(format(prediction.defaultExpiration, 'yyyy-MM-dd'));
             }
         } catch (error) {
             console.error('Auto-classify error:', error);
         } finally {
             setLoadingAI(false);
         }
-    };
-
-    const handleCameraClick = () => {
-        fileInputRef.current?.click();
-    };
-
-    const handleImageCapture = async (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        setLoadingAI(true);
-        setEmoji('📸');
-
-        try {
-            const reader = new FileReader();
-            reader.onloadend = async () => {
-                const base64String = reader.result;
-                try {
-                    if (isAIAvailable()) {
-                        const result = await identifyItemFromImage(base64String, 'zh');
-                        if (result.name) {
-                            setName(result.name);
-                            setCategory(result.category);
-                            setEmoji(result.emoji);
-                            const expiry = addDays(new Date(), result.shelfLifeDays);
-                            setExpirationDate(format(expiry, 'yyyy-MM-dd'));
-                        }
-                    } else {
-                        // AI 不可用时提示用户
-                        alert('拍照识别需要配置 API Key,请前往设置页面配置');
-                        setEmoji('📦');
-                    }
-                } catch (err) {
-                    console.error('AI Vision Error', err);
-                    setEmoji('📦');
-                } finally {
-                    setLoadingAI(false);
-                }
-            };
-            reader.readAsDataURL(file);
-        } catch (error) {
-            console.error('File reading error', error);
-            setLoadingAI(false);
-            setEmoji('📦');
-        }
-
-        e.target.value = '';
     };
 
     const handleSubmit = (e) => {
@@ -137,7 +80,7 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
                         animate={{ y: 0 }}
                         exit={{ y: '100%' }}
                         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 z-50 max-w-md mx-auto shadow-2xl"
+                        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 z-50 max-w-md mx-auto shadow-2xl max-h-[90vh] overflow-y-auto"
                     >
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -149,55 +92,30 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
                         </div>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            {/* Name Input with Camera */}
+                            {/* Name Input */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">物品名称</label>
-                                <div className="flex gap-2">
-                                    <div className="relative flex-1">
-                                        <input
-                                            type="text"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            placeholder="例如:牛奶,苹果..."
-                                            className="w-full p-3 pr-10 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
-                                            autoFocus
-                                            required
-                                        />
-                                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                                            {loadingAI ? (
-                                                <Loader2 className="animate-spin text-emerald-500" size={20} />
-                                            ) : name.length > 2 ? (
-                                                <Sparkles className="text-emerald-500 animate-pulse" size={20} />
-                                            ) : null}
-                                        </div>
-                                    </div>
-
-                                    <button
-                                        type="button"
-                                        onClick={handleCameraClick}
-                                        className="bg-emerald-50 text-emerald-600 p-3 rounded-xl hover:bg-emerald-100 transition-colors flex items-center justify-center active:scale-95"
-                                        title="拍照识别"
-                                        disabled={loadingAI}
-                                    >
-                                        <Camera size={24} />
-                                    </button>
+                                <div className="relative">
                                     <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        accept="image/*"
-                                        capture="environment"
-                                        className="hidden"
-                                        onChange={handleImageCapture}
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder="例如:牛奶,苹果..."
+                                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                                        autoFocus
+                                        required
                                     />
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        {loadingAI ? (
+                                            <Loader2 className="animate-spin text-emerald-500" size={20} />
+                                        ) : name.length > 2 ? (
+                                            <Sparkles className="text-emerald-500 animate-pulse" size={20} />
+                                        ) : null}
+                                    </div>
                                 </div>
                                 {loadingAI && (
                                     <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
                                         <Sparkles size={12} /> AI 正在分析...
-                                    </p>
-                                )}
-                                {!isAIAvailable() && name.length > 2 && (
-                                    <p className="text-xs text-amber-600 mt-1">
-                                        💡 使用 Mock AI (前往设置配置 API Key 以启用真实 AI)
                                     </p>
                                 )}
                             </div>

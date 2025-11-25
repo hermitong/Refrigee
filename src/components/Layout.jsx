@@ -1,6 +1,9 @@
 import { Home, List, ChefHat, Plus, Settings } from 'lucide-react';
+import { useTranslation } from '../contexts/LanguageContext';
 
 export default function Layout({ children, activeTab, onTabChange, onAddClick }) {
+    const { t } = useTranslation();
+
     return (
         <div className="min-h-screen bg-gray-100 flex justify-center">
             {/* Mobile Container */}
@@ -16,14 +19,14 @@ export default function Layout({ children, activeTab, onTabChange, onAddClick })
                     <div className="flex justify-around items-center h-20 px-2">
                         <NavButton
                             icon={<Home size={24} />}
-                            label="Home"
+                            label={t('nav.home')}
                             isActive={activeTab === 'dashboard'}
                             onClick={() => onTabChange('dashboard')}
                         />
 
                         <NavButton
                             icon={<List size={24} />}
-                            label="Fridge"
+                            label={t('nav.fridge')}
                             isActive={activeTab === 'inventory'}
                             onClick={() => onTabChange('inventory')}
                         />
@@ -39,7 +42,7 @@ export default function Layout({ children, activeTab, onTabChange, onAddClick })
 
                         <NavButton
                             icon={<ChefHat size={24} />}
-                            label="Recipes"
+                            label={t('nav.recipes')}
                             isActive={activeTab === 'recipes'}
                             onClick={() => onTabChange('recipes')}
                         />

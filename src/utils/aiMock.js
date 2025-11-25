@@ -66,50 +66,50 @@ export function predictItemDetails(name) {
 export const RECIPES = [
     {
         id: 1,
-        name: "Fruit Salad",
-        ingredients: ["Apple", "Banana", "Orange", "Grape", "Strawberry"],
+        name: "水果沙拉",
+        ingredients: ["苹果", "香蕉", "橙子", "葡萄", "草莓"],
         minIngredients: 2,
         emoji: "🥗",
-        description: "A fresh and healthy mix of fruits."
+        description: "新鲜健康的水果混合。"
     },
     {
         id: 2,
-        name: "Vegetable Stir Fry",
-        ingredients: ["Carrot", "Onion", "Spinach", "Potato"],
+        name: "蔬菜炒菜",
+        ingredients: ["胡萝卜", "洋葱", "菠菜", "土豆"],
         minIngredients: 2,
         emoji: "🥘",
-        description: "Quick stir fry with available veggies."
+        description: "用现有蔬菜快速炒制。"
     },
     {
         id: 3,
-        name: "Omelette",
-        ingredients: ["Egg", "Milk", "Cheese", "Tomato", "Onion"],
+        name: "煎蛋卷",
+        ingredients: ["鸡蛋", "牛奶", "奶酪", "西红柿", "洋葱"],
         minIngredients: 2,
         emoji: "🍳",
-        description: "Classic breakfast dish."
+        description: "经典早餐菜肴。"
     },
     {
         id: 4,
-        name: "Creamy Pasta",
-        ingredients: ["Pasta", "Milk", "Cheese", "Butter"],
+        name: "奶油意面",
+        ingredients: ["意大利面", "牛奶", "奶酪", "黄油"],
         minIngredients: 3,
         emoji: "🍝",
-        description: "Rich and creamy pasta."
+        description: "浓郁顺滑的意面。"
     },
     {
         id: 5,
-        name: "Chicken Salad",
-        ingredients: ["Chicken", "Lettuce", "Tomato", "Onion"],
+        name: "鸡肉沙拉",
+        ingredients: ["鸡肉", "生菜", "西红柿", "洋葱"],
         minIngredients: 2,
         emoji: "🥗",
-        description: "Healthy protein-packed salad."
+        description: "健康高蛋白沙拉。"
     },
     {
         id: 6,
-        name: "Steak & Potatoes",
-        ingredients: ["Beef", "Potato", "Butter"],
+        name: "牛排配土豆",
+        ingredients: ["牛肉", "土豆", "黄油"],
         minIngredients: 2,
         emoji: "🥩",
-        description: "Hearty meal for meat lovers."
+        description: "肉食爱好者的丰盛餐食。"
     }
 ];
