@@ -1,4 +1,4 @@
-import { Home, List, ChefHat, Plus } from 'lucide-react';
+import { Home, List, ChefHat, Plus, Settings } from 'lucide-react';
 
 export default function Layout({ children, activeTab, onTabChange, onAddClick }) {
     return (
@@ -44,8 +44,12 @@ export default function Layout({ children, activeTab, onTabChange, onAddClick })
                             onClick={() => onTabChange('recipes')}
                         />
 
-                        {/* Placeholder for symmetry if needed, or just 3 tabs + FAB */}
-                        <div className="w-12"></div>
+                        <NavButton
+                            icon={<Settings size={24} />}
+                            label="Settings"
+                            isActive={activeTab === 'settings'}
+                            onClick={() => onTabChange('settings')}
+                        />
                     </div>
                 </nav>
             </div>

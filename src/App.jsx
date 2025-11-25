@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import Inventory from './components/Inventory';
 import Recipes from './components/Recipes';
+import Settings from './components/Settings';
 import AddItemModal from './components/AddItemModal';
 import { useInventory } from './hooks/useInventory';
 
@@ -19,6 +20,8 @@ function App() {
         return <Inventory items={items} onDelete={removeItem} />;
       case 'recipes':
         return <Recipes items={items} />;
+      case 'settings':
+        return <Settings />;
       default:
         return <Dashboard items={items} />;
     }

@@ -1,0 +1,7 @@
+{
+  "name": "Refrigee",
+  "description": "A smart food inventory management app that helps you reduce food waste and simplify meal planning with AI-powered classification and recipe recommendations.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
