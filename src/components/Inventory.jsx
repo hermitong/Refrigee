@@ -1,12 +1,18 @@
+import { useState } from 'react';
 import { differenceInDays, parseISO, format } from 'date-fns';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Search } from 'lucide-react';
 import { useTranslation } from '../contexts/LanguageContext';
 
 export default function Inventory({ items, onDelete }) {
     const { t } = useTranslation();
+    const [searchQuery, setSearchQuery] = useState('');
 
-    // Sort by expiration date
-    const sortedItems = [...items].sort((a, b) =>
+    // Filter and sort by expiration date
+    const filteredItems = items.filter(item =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const sortedItems = [...filteredItems].sort((a, b) =>
         new Date(a.expirationDate) - new Date(b.expirationDate)
     );
 
@@ -20,13 +26,31 @@ export default function Inventory({ items, onDelete }) {
 
     return (
         <div className="p-6">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">{t('inventory.title')}</h1>
+            <div className="flex items-center justify-between mb-4">
+                <h1 className="text-2xl font-bold text-gray-800">{t('inventory.title')}</h1>
+                <span className="text-gray-400 text-sm">{items.length}</span>
+            </div>
 
-            {items.length === 0 ? (
-                <div className="text-center py-10 text-gray-400">
-                    <p className="text-4xl mb-2">🕸️</p>
-                    <p>{t('inventory.empty')}</p>
-                    <p className="text-sm">{t('inventory.tapToAdd')}</p>
+            {/* 搜索框 */}
+            <div className="relative mb-6">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="搜索食物..."
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                />
+            </div>
+
+            {filteredItems.length === 0 ? (
+                <div className="text-center py-16">
+                    <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <p className="text-5xl">🧊</p>
+                    </div>
+                    <p className="text-gray-400 font-medium">
+                        {searchQuery ? '未找到匹配的食物' : '冰箱空空如也! 该去购物了吗?'}
+                    </p>
                 </div>
             ) : (
                 <div className="space-y-3">

@@ -3,7 +3,8 @@ import { X, Sparkles, Camera, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { predictItemDetails } from '../utils/aiMock';
 import { format, addDays } from 'date-fns';
-import { useTranslation } from '../contexts/LanguageContext';
+import CameraCapture from './CameraCapture';
+import * as aiServiceManager from '../services/aiServiceManager';
 
 export default function AddItemModal({ isOpen, onClose, onAdd }) {
     const [name, setName] = useState('');
@@ -12,9 +13,9 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
     const [category, setCategory] = useState('');
     const [expirationDate, setExpirationDate] = useState('');
     const [emoji, setEmoji] = useState('📦');
-  const [loadingAI, setLoadingAI] = useState(false);
+    const [loadingAI, setLoadingAI] = useState(false);
+    const [showCamera, setShowCamera] = useState(false);
     const fileInputRef = useRef(null);
-    const { t } = useTranslation();
 
     // AI 自动分类
     useEffect(() => {
@@ -38,6 +39,19 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
         } finally {
             setLoadingAI(false);
         }
+    };
+
+    // 处理相机识别结果
+    const handleCameraCapture = (result) => {
+        if (result.name) {
+            setName(result.name);
+        }
+        setCategory(result.category);
+        setEmoji(result.emoji);
+        if (!expirationDate && result.shelfLifeDays) {
+            setExpirationDate(format(addDays(new Date(), result.shelfLifeDays), 'yyyy-MM-dd'));
+        }
+        setShowCamera(false);
     };
 
     const handleSubmit = (e) => {
@@ -120,6 +134,16 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
                                 )}
                             </div>
 
+                            {/* 拍照按钮 */}
+                            <button
+                                type="button"
+                                onClick={() => setShowCamera(true)}
+                                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-xl font-medium hover:from-blue-600 hover:to-purple-600 transition-all flex items-center justify-center gap-2 shadow-lg"
+                            >
+                                <Camera size={20} />
+                                拍照识别
+                            </button>
+
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">数量</label>
@@ -181,14 +205,22 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
                                 type="submit"
                                 disabled={loadingAI}
                                 className={`w-full py-4 font-bold rounded-xl shadow-lg mt-4 transition-all ${loadingAI
-                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                        : 'bg-emerald-500 text-white shadow-emerald-200 hover:bg-emerald-600 active:scale-95'
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    : 'bg-emerald-500 text-white shadow-emerald-200 hover:bg-emerald-600 active:scale-95'
                                     }`}
                             >
                                 放入冰箱
                             </button>
                         </form>
                     </motion.div>
+
+                    {/* 相机组件 */}
+                    {showCamera && (
+                        <CameraCapture
+                            onCapture={handleCameraCapture}
+                            onCancel={() => setShowCamera(false)}
+                        />
+                    )}
                 </>
             )}
         </AnimatePresence>

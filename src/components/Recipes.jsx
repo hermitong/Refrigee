@@ -85,47 +85,73 @@ export default function Recipes({ items }) {
 
     return (
         <div className="p-6 pb-24">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">食谱推荐 🍳</h1>
+            {/* AI大厨标题 */}
+            <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <span>👨‍🍳</span> AI 大厨
+                </h1>
+                <p className="text-gray-500 text-sm mt-1">今天吃什么?</p>
+            </div>
 
             {/* Controls */}
-            <div className="space-y-3 mb-6">
+            <div className="space-y-4 mb-6">
                 <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">烹饪人数</label>
-                    <div className="flex items-center space-x-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                        <span>👥</span> 用餐人数
+                    </label>
+                    <div className="flex items-center justify-center space-x-6">
                         <button
                             onClick={() => setPeopleCount(Math.max(1, peopleCount - 1))}
-                            className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-600 hover:bg-gray-200"
+                            className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-2xl font-bold text-gray-600 hover:bg-gray-200 active:scale-95 transition-all"
                         >
                             -
                         </button>
-                        <span className="text-xl font-bold text-gray-800 w-8 text-center">{peopleCount}</span>
+                        <span className="text-3xl font-bold text-gray-800 w-12 text-center">{peopleCount}</span>
                         <button
                             onClick={() => setPeopleCount(peopleCount + 1)}
-                            className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-xl font-bold text-gray-600 hover:bg-gray-200"
+                            className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-2xl font-bold text-gray-600 hover:bg-gray-200 active:scale-95 transition-all"
                         >
                             +
                         </button>
                     </div>
                 </div>
 
-                {/* What to Eat Button */}
-                <button
-                    onClick={handleWhatToEat}
-                    disabled={loadingRandom}
-                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white p-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
-                >
-                    {loadingRandom ? (
-                        <>
-                            <Loader2 className="animate-spin" size={20} />
-                            正在思考...
-                        </>
-                    ) : (
-                        <>
-                            <Dice5 size={20} />
-                            今天吃什么?
-                        </>
-                    )}
-                </button>
+                {/* 两个按钮并排 */}
+                <div className="grid grid-cols-2 gap-3">
+                    {/* 冰箱匹配按钮 */}
+                    <button
+                        onClick={handleGenerateRecipes}
+                        disabled={loadingAI || items.length === 0}
+                        className="bg-gray-100 text-gray-700 p-4 rounded-2xl font-medium hover:bg-gray-200 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <Sparkles size={20} />
+                        <span className="text-sm">冰箱匹配</span>
+                    </button>
+
+                    {/* 随便来一个按钮 */}
+                    <button
+                        onClick={handleWhatToEat}
+                        disabled={loadingRandom}
+                        className="bg-emerald-500 text-white p-4 rounded-2xl font-medium hover:bg-emerald-600 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 shadow-lg"
+                    >
+                        {loadingRandom ? (
+                            <>
+                                <Loader2 className="animate-spin" size={20} />
+                                <span className="text-sm">思考中...</span>
+                            </>
+                        ) : (
+                            <>
+                                <Dice5 size={20} />
+                                <span className="text-sm">随便来一个</span>
+                            </>
+                        )}
+                    </button>
+                </div>
+
+                {/* 提示文案 */}
+                <p className="text-center text-xs text-gray-400">
+                    {items.length === 0 ? '冰箱是空的! 试试"随便来一个"!' : `冰箱匹配基于您的 ${items.length} 件食材`}
+                </p>
 
                 {randomRecipe && (
                     <button

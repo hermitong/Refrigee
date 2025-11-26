@@ -19,6 +19,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import SettingsComponent from './components/Settings';
 import RecipesComponent from './components/Recipes';
+import AddItemModal from './components/AddItemModal';
 
 // --- Mock Data & Helpers ---
 
@@ -184,6 +185,7 @@ export default function RefrigeeApp() {
   const [items, setItems] = useState([]);
   const [isScanning, setIsScanning] = useState(false);
   const [user, setUser] = useState({ name: '', isGuest: true, avatar: '👤' });
+  const [showAddModal, setShowAddModal] = useState(false);
 
   // Form State
   const [newItem, setNewItem] = useState({
@@ -249,6 +251,17 @@ export default function RefrigeeApp() {
     setItems([...items, item]);
     setNewItem({ name: '', category: 'other', expiryDate: '', price: '', location: 'fridge' });
     setActiveTab('inventory');
+  };
+
+  const handleAddItemFromModal = (itemData) => {
+    const item = {
+      ...itemData,
+      id: Date.now(),
+      expiryDate: itemData.expirationDate, // AddItemModal uses expirationDate
+      price: 0 // AddItemModal doesn't have price field
+    };
+    setItems([...items, item]);
+    setShowAddModal(false);
   };
 
   const simulateScan = () => {
@@ -578,8 +591,8 @@ export default function RefrigeeApp() {
         {/* Floating Action Button */}
         <div className="relative -top-6">
           <button
-            onClick={() => setActiveTab('add')}
-            className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-200 transition-all transform hover:scale-105 ${activeTab === 'add' ? 'bg-slate-800 text-white' : 'bg-emerald-500 text-white'}`}
+            onClick={() => setShowAddModal(true)}
+            className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-200 transition-all transform hover:scale-105 bg-emerald-500 text-white"
           >
             <Plus size={28} />
           </button>
@@ -588,6 +601,13 @@ export default function RefrigeeApp() {
         <NavButton icon={ChefHat} label={t[lang].recipes} isActive={activeTab === 'recipes'} onClick={() => setActiveTab('recipes')} />
         <NavButton icon={SettingsIcon} label={t[lang].settings} isActive={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
       </div>
+
+      {/* Add Item Modal */}
+      <AddItemModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onAdd={handleAddItemFromModal}
+      />
     </div>
   );
 }
