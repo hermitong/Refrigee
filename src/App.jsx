@@ -10,13 +10,14 @@ import {
   CheckCircle2,
   Snowflake,
   Package,
-  Settings,
+  Settings as SettingsIcon,
   Languages,
   DollarSign,
   Search,
   ShoppingBag
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SettingsComponent from './components/Settings';
 
 // --- Mock Data & Helpers ---
 
@@ -562,24 +563,7 @@ export default function RefrigeeApp() {
             {activeTab === 'add' && <AddItemView />}
             {activeTab === 'recipes' && <RecipeView />}
             {activeTab === 'settings' && (
-              <div className="pb-24">
-                <h2 className="text-xl font-bold mb-6">{t[lang].settings}</h2>
-                <Card className="mb-4 flex justify-between items-center cursor-pointer" >
-                  <div className="flex items-center gap-3">
-                    <Languages className="text-purple-500" />
-                    <span>{t[lang].language}</span>
-                  </div>
-                  <button onClick={() => setLang(lang === 'en' ? 'zh' : 'en')} className="text-emerald-600 font-bold">
-                    {lang === 'en' ? 'English' : '中文'}
-                  </button>
-                </Card>
-                <button
-                  onClick={() => { if (window.confirm('Clear all data?')) setItems([]) }}
-                  className="w-full py-3 text-red-500 font-medium"
-                >
-                  {t[lang].clearData}
-                </button>
-              </div>
+              <SettingsComponent />
             )}
           </motion.div>
         </AnimatePresence>
@@ -601,7 +585,7 @@ export default function RefrigeeApp() {
         </div>
 
         <NavButton icon={ChefHat} label={t[lang].recipes} isActive={activeTab === 'recipes'} onClick={() => setActiveTab('recipes')} />
-        <NavButton icon={Settings} label={t[lang].settings} isActive={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
+        <NavButton icon={SettingsIcon} label={t[lang].settings} isActive={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
       </div>
     </div>
   );
