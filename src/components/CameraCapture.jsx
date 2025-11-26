@@ -67,12 +67,20 @@ export default function CameraCapture({ onCapture, onCancel }) {
 
         setIdentifying(true);
         try {
+            console.log('开始AI识别...');
             const result = await aiServiceManager.identifyImage(capturedImage);
+            console.log('AI识别成功:', result);
             onCapture(result);
         } catch (error) {
-            console.error('AI识别失败:', error);
-            alert('AI识别失败,请重试或手动输入');
-            onCapture({ name: '', category: 'Other', emoji: '📦', shelfLifeDays: 7 });
+            console.error('AI识别功能暂不可用:', error);
+            alert('AI识别功能暂不可用,请手动输入物品信息');
+            // 不降级,返回空值让用户手动输入
+            onCapture({
+                name: '',
+                category: '',
+                emoji: '📦',
+                shelfLifeDays: null
+            });
         } finally {
             setIdentifying(false);
         }

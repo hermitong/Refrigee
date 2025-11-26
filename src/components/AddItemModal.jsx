@@ -27,15 +27,21 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
     const handleAutoClassify = async () => {
         setLoadingAI(true);
         try {
-            // 降级到 Mock AI
-            const prediction = predictItemDetails(name);
-            setCategory(prediction.category);
-            setEmoji(prediction.emoji);
-            if (!expirationDate) {
-                setExpirationDate(format(prediction.defaultExpiration, 'yyyy-MM-dd'));
+            console.log('开始AI分类,物品名称:', name);
+            // 调用真实AI服务
+            const result = await aiServiceManager.classifyItem(name, 'zh');
+            console.log('AI分类成功:', result);
+
+            setCategory(result.category);
+            setEmoji(result.emoji);
+            if (!expirationDate && result.shelfLifeDays) {
+                setExpirationDate(format(addDays(new Date(), result.shelfLifeDays), 'yyyy-MM-dd'));
             }
         } catch (error) {
-            console.error('Auto-classify error:', error);
+            console.error('AI分类功能暂不可用:', error);
+            console.error('错误详情:', error.message, error.stack);
+            // AI失败后不降级,让用户手动选择
+            // 不显示错误提示,保持静默失败
         } finally {
             setLoadingAI(false);
         }
