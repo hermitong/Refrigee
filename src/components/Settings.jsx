@@ -1,245 +1,210 @@
 import { useState, useEffect } from 'react';
-import { Globe, Moon, ChevronRight, Key, Check, ChevronDown, ChevronUp, LogOut, ArrowRight, Save, User } from 'lucide-react';
-import { useTranslation } from '../contexts/LanguageContext';
+import { Globe, Moon, ChevronRight, User, Key, Eye, EyeOff, CheckCircle, XCircle, Loader2, ExternalLink } from 'lucide-react';
+import { testApiKey, isAIAvailable } from '../services/geminiService';
 
-export default function Settings({ user, onUpdateUser }) {
-    const { t, lang, setLang } = useTranslation();
-
-    const [showApiConfig, setShowApiConfig] = useState(false);
+export default function Settings() {
     const [apiKey, setApiKey] = useState('');
-    const [savedSuccess, setSavedSuccess] = useState(false);
-
-    // Login State
-    const [isLoginOpen, setIsLoginOpen] = useState(false);
-    const [tempName, setTempName] = useState('');
+    const [showApiKey, setShowApiKey] = useState(false);
+    const [testing, setTesting] = useState(false);
+    const [testResult, setTestResult] = useState(null);
 
     useEffect(() => {
-        const savedKey = localStorage.getItem('custom_api_key');
-        if (savedKey) setApiKey(savedKey);
+        // 加载已保存的 API Key
+        const savedKey = localStorage.getItem('refrigee_api_key') || '';
+        setApiKey(savedKey);
     }, []);
 
-    const handleSaveKey = () => {
-        if (apiKey.trim()) {
-            localStorage.setItem('custom_api_key', apiKey.trim());
-        } else {
-            localStorage.removeItem('custom_api_key');
+    const handleSaveApiKey = () => {
+        localStorage.setItem('refrigee_api_key', apiKey.trim());
+        setTestResult({ success: true, message: 'API Key 已保存!' });
+        setTimeout(() => setTestResult(null), 3000);
+    };
+
+    const handleTestApiKey = async () => {
+        if (!apiKey.trim()) {
+            setTestResult({ success: false, message: '请先输入 API Key' });
+            return;
         }
-        setSavedSuccess(true);
-        setTimeout(() => setSavedSuccess(false), 2000);
-    };
 
-    const handleLogin = () => {
-        if (tempName.trim()) {
-            onUpdateUser({
-                name: tempName.trim(),
-                isGuest: false,
-                avatar: '🧑‍🍳'
-            });
-            setIsLoginOpen(false);
-            setTempName('');
+        setTesting(true);
+        setTestResult(null);
+
+        // 临时保存以便测试
+        const originalKey = localStorage.getItem('refrigee_api_key');
+        localStorage.setItem('refrigee_api_key', apiKey.trim());
+
+        const result = await testApiKey();
+        setTestResult(result);
+
+        // 如果测试失败,恢复原来的 key
+        if (!result.success && originalKey !== null) {
+            localStorage.setItem('refrigee_api_key', originalKey);
         }
+
+        setTesting(false);
     };
 
-    const handleLogout = () => {
-        onUpdateUser({ name: '', isGuest: true, avatar: '👤' });
+    const handleClearApiKey = () => {
+        setApiKey('');
+        localStorage.removeItem('refrigee_api_key');
+        setTestResult({ success: true, message: 'API Key 已清除' });
+        setTimeout(() => setTestResult(null), 3000);
     };
 
-    const labels = {
-        en: {
-            title: "Settings",
-            language: "Language",
-            appearance: "Appearance",
-            account: "Account",
-            about: "About",
-            version: "Version 1.1.0",
-            apiConfig: "API Configuration",
-            apiDesc: "Enter your Gemini API Key",
-            save: "Save",
-            saved: "Saved!",
-            placeholder: "Paste API Key here...",
-            guest: "Guest Mode",
-            signIn: "Sign In",
-            namePlaceholder: "Enter your name",
-            welcome: "Welcome back,",
-            logout: "Log Out",
-            loginTitle: "Create Profile",
-            loginDesc: "Save your preferences locally."
-        },
-        zh: {
-            title: "设置",
-            language: "语言",
-            appearance: "外观",
-            account: "账号",
-            about: "关于",
-            version: "版本 1.1.0",
-            apiConfig: "API 配置",
-            apiDesc: "输入您的 Gemini API Key",
-            save: "保存",
-            saved: "已保存!",
-            placeholder: "在此粘贴 API Key...",
-            guest: "访客模式",
-            signIn: "登录 / 注册",
-            namePlaceholder: "输入您的名字",
-            welcome: "欢迎回来,",
-            logout: "退出登录",
-            loginTitle: "创建资料",
-            loginDesc: "在本地保存您的偏好设置。"
-        }
-    };
-
-    const tLocal = labels[lang];
+    const aiStatus = isAIAvailable();
 
     return (
-        <div className="space-y-6 pb-20">
-            <h2 className="text-2xl font-bold text-gray-800">{tLocal.title}</h2>
+        <div className="p-6 space-y-6">
+            <h2 className="text-2xl font-bold text-gray-800">设置</h2>
 
-            {/* Account Section */}
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden transition-all duration-300">
-                {!isLoginOpen ? (
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center text-2xl shadow-inner border-2 border-white">
-                                {user?.avatar || '👤'}
-                            </div>
-                            <div>
-                                {user?.isGuest !== false ? (
-                                    <div className="flex flex-col">
-                                        <h3 className="font-bold text-lg text-gray-800">{tLocal.guest}</h3>
-                                        <button
-                                            onClick={() => setIsLoginOpen(true)}
-                                            className="text-emerald-500 text-sm font-bold mt-0.5 flex items-center hover:text-emerald-600"
-                                        >
-                                            {tLocal.signIn} <ChevronRight size={14} />
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">{tLocal.welcome}</p>
-                                        <h3 className="font-bold text-xl text-gray-800">{user?.name}</h3>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {user?.isGuest === false && (
-                            <button
-                                onClick={handleLogout}
-                                className="p-2 bg-gray-50 text-gray-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-colors"
-                                title={tLocal.logout}
-                            >
-                                <LogOut size={20} />
-                            </button>
-                        )}
-                    </div>
-                ) : (
-                    <div className="animate-fade-in">
-                        <div className="mb-4">
-                            <h3 className="font-bold text-lg text-gray-800">{tLocal.loginTitle}</h3>
-                            <p className="text-xs text-gray-400">{tLocal.loginDesc}</p>
-                        </div>
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
-                                value={tempName}
-                                onChange={(e) => setTempName(e.target.value)}
-                                placeholder={tLocal.namePlaceholder}
-                                className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                autoFocus
-                            />
-                            <button
-                                onClick={handleLogin}
-                                disabled={!tempName.trim()}
-                                className="bg-emerald-500 text-white p-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-emerald-200 hover:bg-emerald-600 transition-all"
-                            >
-                                <ArrowRight size={20} />
-                            </button>
-                        </div>
-                        <button
-                            onClick={() => setIsLoginOpen(false)}
-                            className="text-xs text-gray-400 mt-3 hover:text-gray-600 underline decoration-dotted"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                )}
+            {/* Account Section Placeholder */}
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-4">
+                <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-xl font-bold">
+                    <User size={28} />
+                </div>
+                <div>
+                    <h3 className="font-bold text-lg text-gray-800">用户</h3>
+                    <p className="text-gray-400 text-sm">访客模式</p>
+                </div>
             </div>
 
             <div className="space-y-3">
-                {/* Language Toggle */}
-                <button
-                    onClick={() => setLang(lang === 'en' ? 'zh' : 'en')}
-                    className="w-full bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between active:scale-[0.99] transition-all"
-                >
+                {/* Language - Placeholder for now */}
+                <div className="w-full bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between opacity-50">
                     <div className="flex items-center gap-3 text-gray-700">
                         <div className="p-2 bg-blue-50 text-blue-500 rounded-lg">
                             <Globe size={20} />
                         </div>
-                        <span className="font-medium">{tLocal.language}</span>
+                        <span className="font-medium">语言</span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-400">
-                        <span className="text-sm font-medium text-gray-600">{lang === 'en' ? 'English' : '中文'}</span>
+                        <span className="text-sm font-medium text-gray-600">中文</span>
                         <ChevronRight size={18} />
                     </div>
-                </button>
-
-                {/* API Configuration */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <button
-                        onClick={() => setShowApiConfig(!showApiConfig)}
-                        className="w-full p-4 flex items-center justify-between active:bg-gray-50 transition-colors"
-                    >
-                        <div className="flex items-center gap-3 text-gray-700">
-                            <div className="p-2 bg-amber-50 text-amber-500 rounded-lg">
-                                <Key size={20} />
-                            </div>
-                            <span className="font-medium">{tLocal.apiConfig}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-400">
-                            {showApiConfig ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                        </div>
-                    </button>
-
-                    {showApiConfig && (
-                        <div className="p-4 pt-0 animate-fade-in">
-                            <p className="text-xs text-gray-500 mb-2">{tLocal.apiDesc}</p>
-                            <div className="flex gap-2">
-                                <input
-                                    type="password"
-                                    value={apiKey}
-                                    onChange={(e) => setApiKey(e.target.value)}
-                                    placeholder={tLocal.placeholder}
-                                    className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                />
-                                <button
-                                    onClick={handleSaveKey}
-                                    className={`px-4 py-2 rounded-xl text-sm font-bold text-white transition-all flex items-center gap-1
-                                        ${savedSuccess ? 'bg-green-500' : 'bg-emerald-500 hover:bg-emerald-600'}`}
-                                >
-                                    {savedSuccess ? <Check size={16} /> : <Save size={16} />}
-                                    {savedSuccess ? tLocal.saved : tLocal.save}
-                                </button>
-                            </div>
-                        </div>
-                    )}
                 </div>
 
-                {/* Appearance Placeholder */}
+                {/* Appearance - Placeholder */}
                 <div className="w-full bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between opacity-50">
                     <div className="flex items-center gap-3 text-gray-700">
                         <div className="p-2 bg-purple-50 text-purple-500 rounded-lg">
                             <Moon size={20} />
                         </div>
-                        <span className="font-medium">{tLocal.appearance}</span>
+                        <span className="font-medium">外观</span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-400">
-                        <span className="text-sm">Light</span>
+                        <span className="text-sm">浅色</span>
                         <ChevronRight size={18} />
+                    </div>
+                </div>
+
+                {/* API Configuration */}
+                <div className="w-full bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                    <div className="flex items-center gap-3 text-gray-700 mb-4">
+                        <div className="p-2 bg-emerald-50 text-emerald-500 rounded-lg">
+                            <Key size={20} />
+                        </div>
+                        <div className="flex-1">
+                            <span className="font-medium block">API 配置</span>
+                            <span className="text-xs text-gray-400">
+                                {aiStatus ? (
+                                    <span className="text-emerald-600 flex items-center gap-1">
+                                        <CheckCircle size={12} /> 已配置
+                                    </span>
+                                ) : (
+                                    <span className="text-amber-600">未配置 - 使用 Mock AI</span>
+                                )}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        {/* API Key Input */}
+                        <div className="relative">
+                            <input
+                                type={showApiKey ? 'text' : 'password'}
+                                value={apiKey}
+                                onChange={(e) => setApiKey(e.target.value)}
+                                placeholder="输入 Gemini API Key"
+                                className="w-full p-3 pr-12 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowApiKey(!showApiKey)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                            >
+                                {showApiKey ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-2">
+                            <button
+                                onClick={handleSaveApiKey}
+                                disabled={!apiKey.trim()}
+                                className="flex-1 bg-emerald-500 text-white py-2.5 rounded-xl font-medium hover:bg-emerald-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-sm"
+                            >
+                                保存
+                            </button>
+                            <button
+                                onClick={handleTestApiKey}
+                                disabled={!apiKey.trim() || testing}
+                                className="flex-1 bg-blue-500 text-white py-2.5 rounded-xl font-medium hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-sm flex items-center justify-center gap-2"
+                            >
+                                {testing ? (
+                                    <>
+                                        <Loader2 size={16} className="animate-spin" />
+                                        测试中...
+                                    </>
+                                ) : (
+                                    '测试连接'
+                                )}
+                            </button>
+                            <button
+                                onClick={handleClearApiKey}
+                                disabled={!apiKey.trim()}
+                                className="px-4 bg-gray-100 text-gray-600 py-2.5 rounded-xl font-medium hover:bg-gray-200 disabled:bg-gray-50 disabled:cursor-not-allowed transition-colors text-sm"
+                            >
+                                清除
+                            </button>
+                        </div>
+
+                        {/* Test Result */}
+                        {testResult && (
+                            <div className={`p-3 rounded-xl text-sm flex items-center gap-2 ${testResult.success
+                                ? 'bg-emerald-50 text-emerald-700'
+                                : 'bg-red-50 text-red-700'
+                                }`}>
+                                {testResult.success ? (
+                                    <CheckCircle size={16} />
+                                ) : (
+                                    <XCircle size={16} />
+                                )}
+                                {testResult.message}
+                            </div>
+                        )}
+
+                        {/* Help Text */}
+                        <div className="text-xs text-gray-500 space-y-1 bg-gray-50 p-3 rounded-lg">
+                            <p className="font-medium text-gray-700">如何获取 API Key:</p>
+                            <a
+                                href="https://aistudio.google.com/apikey"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-700 flex items-center gap-1 underline"
+                            >
+                                访问 Google AI Studio
+                                <ExternalLink size={12} />
+                            </a>
+                            <p className="text-gray-500 mt-2">
+                                💡 未配置时将使用 Mock AI 提供基础功能
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div className="text-center mt-10 text-gray-300 text-sm">
-                {tLocal.version}
+                版本 1.0.0
             </div>
         </div>
     );
