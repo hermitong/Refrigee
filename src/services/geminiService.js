@@ -1,7 +1,8 @@
 import { GoogleGenAI } from '@google/genai';
 import { predictItemDetails, RECIPES } from '../utils/aiMock.js';
 
-const MODEL_NAME = 'gemini-2.0-flash-exp';
+// 使用稳定的免费模型,避免配额限制
+const MODEL_NAME = 'gemini-1.5-flash';
 
 // 从 localStorage 获取 API Key
 function getApiKey() {
