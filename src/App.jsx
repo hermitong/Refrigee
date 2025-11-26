@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SettingsComponent from './components/Settings';
+import RecipesComponent from './components/Recipes';
 
 // --- Mock Data & Helpers ---
 
@@ -561,7 +562,7 @@ export default function RefrigeeApp() {
             {activeTab === 'dashboard' && <DashboardView />}
             {activeTab === 'inventory' && <InventoryView />}
             {activeTab === 'add' && <AddItemView />}
-            {activeTab === 'recipes' && <RecipeView />}
+            {activeTab === 'recipes' && <RecipesComponent items={items} />}
             {activeTab === 'settings' && (
               <SettingsComponent />
             )}
