@@ -181,7 +181,8 @@ export default function RefrigeeApp() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [items, setItems] = useState([]);
   const [isScanning, setIsScanning] = useState(false);
-  
+  const [user, setUser] = useState({ name: '', isGuest: true, avatar: '👤' });
+
   // Form State
   const [newItem, setNewItem] = useState({
     name: '',
@@ -191,15 +192,32 @@ export default function RefrigeeApp() {
     location: 'fridge'
   });
 
-// --- Effects ---
+  // --- Effects ---
   useEffect(() => {
     const saved = localStorage.getItem('refrigee_items');
     if (saved) setItems(JSON.parse(saved));
+
+    const savedUser = localStorage.getItem('refrigee_user');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {
+        console.error("Failed to load user", e);
+      }
+    }
   }, []);
 
   useEffect(() => {
     localStorage.setItem('refrigee_items', JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    localStorage.setItem('refrigee_user', JSON.stringify(user));
+  }, [user]);
+
+  const handleUpdateUser = (newUser) => {
+    setUser(newUser);
+  };
 
   // --- Helpers ---
   const getDaysDiff = (dateString) => {
@@ -238,7 +256,7 @@ export default function RefrigeeApp() {
       const today = new Date();
       const daysToAdd = CATEGORIES[randomItem.category].defaultDays;
       const expiry = new Date(today.setDate(today.getDate() + daysToAdd)).toISOString().split('T')[0];
-      
+
       setNewItem({
         name: randomItem.name,
         category: randomItem.category,
@@ -270,7 +288,7 @@ export default function RefrigeeApp() {
             <p className="text-slate-500 text-sm">Don't waste, just taste.</p>
           </div>
           <div className="bg-slate-100 p-2 rounded-full">
-             <Refrigerator className="text-emerald-500" size={24} />
+            <Refrigerator className="text-emerald-500" size={24} />
           </div>
         </header>
 
@@ -300,7 +318,7 @@ export default function RefrigeeApp() {
               {t[lang].expiringSoon}
             </h2>
           </div>
-          
+
           {expiringItems.length === 0 ? (
             <div className="text-center py-8 text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
               <CheckCircle2 size={32} className="mx-auto mb-2 text-emerald-400" />
@@ -341,8 +359,8 @@ export default function RefrigeeApp() {
         <h2 className="text-xl font-bold">{t[lang].inventory}</h2>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder={t[lang].search}
             className="w-full bg-slate-100 pl-10 pr-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500"
             value={filter}
@@ -351,36 +369,36 @@ export default function RefrigeeApp() {
         </div>
 
         <div className="space-y-3">
-           {sortedItems.length === 0 && (
-             <div className="text-center text-slate-400 mt-10">{t[lang].emptyState}</div>
-           )}
-           {sortedItems.map(item => {
-             const days = getDaysDiff(item.expiryDate);
-             const status = getExpiryStatus(days);
-             return (
-               <Card key={item.id} className="flex justify-between items-center">
-                 <div className="flex items-center gap-3">
-                   <div className="bg-slate-100 p-2 rounded-lg text-slate-600">
-                      {item.location === 'freezer' ? <Snowflake size={18} /> : <Package size={18} />}
-                   </div>
-                   <div>
-                     <div className="font-bold text-slate-800">{item.name}</div>
-                     <div className="text-xs text-slate-500 flex gap-2">
-                       <span>{CATEGORIES[item.category]?.label[lang]}</span>
-                       <span>•</span>
-                       <span>{item.expiryDate}</span>
-                     </div>
-                   </div>
-                 </div>
-                 <div className="flex items-center gap-3">
-                    <Badge color={status.color} text={status.label} />
-                    <button onClick={() => handleDelete(item.id)} className="text-slate-300 hover:text-red-500">
-                      <Trash2 size={18} />
-                    </button>
-                 </div>
-               </Card>
-             )
-           })}
+          {sortedItems.length === 0 && (
+            <div className="text-center text-slate-400 mt-10">{t[lang].emptyState}</div>
+          )}
+          {sortedItems.map(item => {
+            const days = getDaysDiff(item.expiryDate);
+            const status = getExpiryStatus(days);
+            return (
+              <Card key={item.id} className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="bg-slate-100 p-2 rounded-lg text-slate-600">
+                    {item.location === 'freezer' ? <Snowflake size={18} /> : <Package size={18} />}
+                  </div>
+                  <div>
+                    <div className="font-bold text-slate-800">{item.name}</div>
+                    <div className="text-xs text-slate-500 flex gap-2">
+                      <span>{CATEGORIES[item.category]?.label[lang]}</span>
+                      <span>•</span>
+                      <span>{item.expiryDate}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Badge color={status.color} text={status.label} />
+                  <button onClick={() => handleDelete(item.id)} className="text-slate-300 hover:text-red-500">
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </Card>
+            )
+          })}
         </div>
       </div>
     );
@@ -389,8 +407,8 @@ export default function RefrigeeApp() {
   const AddItemView = () => (
     <div className="pb-24">
       <h2 className="text-xl font-bold mb-6">{t[lang].add}</h2>
-      
-      <button 
+
+      <button
         onClick={simulateScan}
         disabled={isScanning}
         className="w-full mb-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-4 rounded-xl shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 font-bold active:scale-95 transition-all"
@@ -402,10 +420,10 @@ export default function RefrigeeApp() {
       <form onSubmit={handleAddItem} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-slate-600 mb-1">{t[lang].itemName}</label>
-          <input 
+          <input
             required
             value={newItem.name}
-            onChange={e => setNewItem({...newItem, name: e.target.value})}
+            onChange={e => setNewItem({ ...newItem, name: e.target.value })}
             className="w-full border border-slate-200 rounded-xl p-3 outline-none focus:border-emerald-500"
             placeholder="e.g. Milk"
           />
@@ -414,9 +432,9 @@ export default function RefrigeeApp() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">{t[lang].category}</label>
-            <select 
+            <select
               value={newItem.category}
-              onChange={e => setNewItem({...newItem, category: e.target.value})}
+              onChange={e => setNewItem({ ...newItem, category: e.target.value })}
               className="w-full border border-slate-200 rounded-xl p-3 outline-none bg-white"
             >
               {Object.entries(CATEGORIES).map(([key, val]) => (
@@ -426,9 +444,9 @@ export default function RefrigeeApp() {
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">{t[lang].location}</label>
-            <select 
+            <select
               value={newItem.location}
-              onChange={e => setNewItem({...newItem, location: e.target.value})}
+              onChange={e => setNewItem({ ...newItem, location: e.target.value })}
               className="w-full border border-slate-200 rounded-xl p-3 outline-none bg-white"
             >
               {Object.entries(LOCATIONS).map(([key, val]) => (
@@ -441,21 +459,21 @@ export default function RefrigeeApp() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">{t[lang].expiry}</label>
-            <input 
+            <input
               type="date"
               required
               value={newItem.expiryDate}
-              onChange={e => setNewItem({...newItem, expiryDate: e.target.value})}
+              onChange={e => setNewItem({ ...newItem, expiryDate: e.target.value })}
               className="w-full border border-slate-200 rounded-xl p-3 outline-none focus:border-emerald-500"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">{t[lang].price}</label>
-            <input 
+            <input
               type="number"
               step="0.01"
               value={newItem.price}
-              onChange={e => setNewItem({...newItem, price: e.target.value})}
+              onChange={e => setNewItem({ ...newItem, price: e.target.value })}
               className="w-full border border-slate-200 rounded-xl p-3 outline-none focus:border-emerald-500"
               placeholder="0.00"
             />
@@ -473,7 +491,7 @@ export default function RefrigeeApp() {
     // Simple Logic: Check how many ingredients match user items names (partial string match)
     const recipesWithMatch = MOCK_RECIPES.map(recipe => {
       const userItemNames = items.map(i => i.name.toLowerCase());
-      const matches = recipe.ingredients.filter(ing => 
+      const matches = recipe.ingredients.filter(ing =>
         userItemNames.some(uItem => uItem.includes(ing.toLowerCase()) || ing.toLowerCase().includes(uItem))
       );
       return { ...recipe, matches };
@@ -482,7 +500,7 @@ export default function RefrigeeApp() {
     return (
       <div className="pb-24">
         <h2 className="text-xl font-bold mb-4">{t[lang].availableRecipes}</h2>
-        
+
         <div className="space-y-4">
           {recipesWithMatch.map(recipe => {
             const matchCount = recipe.matches.length;
@@ -495,7 +513,7 @@ export default function RefrigeeApp() {
                   <h3 className="font-bold text-lg text-slate-800">{recipe.title[lang]}</h3>
                   <Badge color={isCookable ? 'green' : 'gray'} text={`${matchCount}/${totalCount}`} />
                 </div>
-                
+
                 <div className="flex gap-2 flex-wrap mb-3">
                   {recipe.ingredients.map((ing, idx) => {
                     const isHave = recipe.matches.includes(ing);
@@ -508,13 +526,13 @@ export default function RefrigeeApp() {
                 </div>
 
                 <div className="flex justify-between items-center mt-4">
-                   <div className="text-xs text-slate-500 flex gap-3">
-                     <span>{recipe.time}</span>
-                     <span>{recipe.difficulty}</span>
-                   </div>
-                   <button className="text-sm font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-lg hover:bg-emerald-100">
-                     {t[lang].cookThis}
-                   </button>
+                  <div className="text-xs text-slate-500 flex gap-3">
+                    <span>{recipe.time}</span>
+                    <span>{recipe.difficulty}</span>
+                  </div>
+                  <button className="text-sm font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-lg hover:bg-emerald-100">
+                    {t[lang].cookThis}
+                  </button>
                 </div>
               </Card>
             )
@@ -528,7 +546,7 @@ export default function RefrigeeApp() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 max-w-md mx-auto relative shadow-2xl overflow-hidden">
-      
+
       {/* Dynamic Content Area */}
       <div className="p-6 h-full overflow-y-auto scrollbar-hide">
         <AnimatePresence mode="wait">
@@ -545,22 +563,22 @@ export default function RefrigeeApp() {
             {activeTab === 'recipes' && <RecipeView />}
             {activeTab === 'settings' && (
               <div className="pb-24">
-                 <h2 className="text-xl font-bold mb-6">{t[lang].settings}</h2>
-                 <Card className="mb-4 flex justify-between items-center cursor-pointer" >
-                   <div className="flex items-center gap-3">
-                     <Languages className="text-purple-500" />
-                     <span>{t[lang].language}</span>
-                   </div>
-                   <button onClick={() => setLang(lang === 'en' ? 'zh' : 'en')} className="text-emerald-600 font-bold">
-                     {lang === 'en' ? 'English' : '中文'}
-                   </button>
-                 </Card>
-                 <button 
-                    onClick={() => {if(window.confirm('Clear all data?')) setItems([])}}
-                    className="w-full py-3 text-red-500 font-medium"
-                 >
-                   {t[lang].clearData}
-                 </button>
+                <h2 className="text-xl font-bold mb-6">{t[lang].settings}</h2>
+                <Card className="mb-4 flex justify-between items-center cursor-pointer" >
+                  <div className="flex items-center gap-3">
+                    <Languages className="text-purple-500" />
+                    <span>{t[lang].language}</span>
+                  </div>
+                  <button onClick={() => setLang(lang === 'en' ? 'zh' : 'en')} className="text-emerald-600 font-bold">
+                    {lang === 'en' ? 'English' : '中文'}
+                  </button>
+                </Card>
+                <button
+                  onClick={() => { if (window.confirm('Clear all data?')) setItems([]) }}
+                  className="w-full py-3 text-red-500 font-medium"
+                >
+                  {t[lang].clearData}
+                </button>
               </div>
             )}
           </motion.div>
@@ -571,10 +589,10 @@ export default function RefrigeeApp() {
       <div className="absolute bottom-0 left-0 w-full bg-white border-t border-slate-100 px-6 py-2 flex justify-between items-center z-10">
         <NavButton icon={LayoutDashboard} label={t[lang].dashboard} isActive={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
         <NavButton icon={Refrigerator} label={t[lang].inventory} isActive={activeTab === 'inventory'} onClick={() => setActiveTab('inventory')} />
-        
+
         {/* Floating Action Button */}
         <div className="relative -top-6">
-          <button 
+          <button
             onClick={() => setActiveTab('add')}
             className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-200 transition-all transform hover:scale-105 ${activeTab === 'add' ? 'bg-slate-800 text-white' : 'bg-emerald-500 text-white'}`}
           >
@@ -590,7 +608,7 @@ export default function RefrigeeApp() {
 }
 
 const NavButton = ({ icon: Icon, label, isActive, onClick }) => (
-  <button 
+  <button
     onClick={onClick}
     className={`flex flex-col items-center gap-1 p-2 transition-colors ${isActive ? 'text-emerald-600' : 'text-slate-400 hover:text-slate-600'}`}
   >

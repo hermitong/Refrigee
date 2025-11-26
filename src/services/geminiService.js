@@ -8,15 +8,23 @@ function getApiKey() {
     return localStorage.getItem('refrigee_api_key');
 }
 
-// 检查 AI 是否可用
+// 检查 AI 是否可用 - 检查自定义 Key 或应用 Key
 export function isAIAvailable() {
-    const apiKey = getApiKey();
+    const customKey = localStorage.getItem('custom_api_key');
+    const appKey = localStorage.getItem('refrigee_api_key');
+    const apiKey = customKey || appKey;
     return apiKey && apiKey.trim().length > 0;
 }
 
-// 获取 AI 实例
+// 获取 AI 实例 - 优先使用自定义 API Key
 function getAI() {
-    const apiKey = getApiKey();
+    // 优先使用用户在设置中配置的自定义 Key
+    const customKey = localStorage.getItem('custom_api_key');
+    // 其次使用应用配置的 Key
+    const appKey = localStorage.getItem('refrigee_api_key');
+
+    const apiKey = customKey || appKey;
+
     if (!apiKey) {
         throw new Error('API Key not configured');
     }
