@@ -5,4 +5,8 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/Refrigee/',
+  define: {
+    // 提供默认的环境变量,避免构建时报错
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || '')
+  }
 })
