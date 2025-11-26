@@ -1,6 +1,7 @@
 import React from 'react';
-import { AlertCircle, CheckCircle, Package, Refrigerator } from 'lucide-react';
+import { AlertCircle, CheckCircle, Package, Refrigerator, Sparkles } from 'lucide-react';
 import { useTranslation } from '../contexts/LanguageContext';
+import * as aiServiceManager from '../services/aiServiceManager';
 
 export default function Dashboard({ items, user, onNavigate }) {
     const { t, lang } = useTranslation();
@@ -62,6 +63,43 @@ export default function Dashboard({ items, user, onNavigate }) {
                     <Refrigerator size={24} />
                 </div>
             </header>
+
+            {/* AI Status Card */}
+            {(() => {
+                const providerInfo = aiServiceManager.getCurrentProviderInfo();
+                const usage = aiServiceManager.getUsageStats();
+                const todayCalls = usage[providerInfo.id]?.calls || 0;
+
+                return (
+                    <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-2xl border border-purple-100">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                                    {providerInfo.enabled ? (
+                                        <span className="text-xl">{providerInfo.icon}</span>
+                                    ) : (
+                                        <Sparkles size={20} className="text-gray-400" />
+                                    )}
+                                </div>
+                                <div>
+                                    <div className="text-sm font-bold text-gray-800">
+                                        AI: {providerInfo.displayName}
+                                    </div>
+                                    <div className="text-xs text-gray-500">
+                                        {providerInfo.enabled ? `今日 ${todayCalls} 次调用` : '使用 Mock AI'}
+                                    </div>
+                                </div>
+                            </div>
+                            {providerInfo.enabled && (
+                                <div className="flex items-center gap-1 text-emerald-600 bg-white px-3 py-1 rounded-full">
+                                    <CheckCircle size={14} />
+                                    <span className="text-xs font-medium">已配置</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            })()}
 
             {/* Stats Cards Row */}
             <div className="grid grid-cols-2 gap-4">

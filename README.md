@@ -1,149 +1,69 @@
-# 🍎 Refrigee - 智能冰箱管理器
+# Refrigee - 智能冰箱管理器
 
-**Refrigee** 是一款专为上班族和国际学生设计的智能冰箱管理应用,通过智能库存追踪帮助减少食物浪费并简化膳食规划。
+## 🎉 新功能: 多AI服务商支持
 
-## ✨ 核心功能
+现在支持配置多个AI服务商,包括:
+- 🔷 Google Gemini
+- 🤖 OpenAI
+- 🧠 DeepSeek
+- 🎓 智谱AI
+- 🫘 豆包(字节跳动)
 
-### 📦 智能库存记录
-- 快速添加食材,支持手动输入或拍照识别
-- AI 自动分类和保质期预测
-- 可视化库存管理,一目了然
+### 🚀 快速开始
 
-### ⏰ 过期提醒
-- 智能过期日期追踪
-- 颜色编码提醒系统(绿色→黄色→红色)
-- 即将过期物品优先显示
+1. **安装依赖**
+```bash
+npm install
+```
 
-### 🍳 食谱推荐
-- 基于现有食材智能推荐菜谱
-- 支持自定义用餐人数
-- "今天吃什么"随机推荐功能
-- 中式家常菜优先
+2. **启动开发服务器**
+```bash
+npm run dev
+```
 
-### 🌐 国际化支持
-- 中文/英文界面切换
-- 本地化食谱和提示
+3. **配置AI服务商**
+   - 打开应用,进入Settings页面
+   - 点击"添加服务商"选择你想使用的AI服务商
+   - 输入对应的API Key
+   - 点击"测试连接"验证
+   - 点击"启用"激活服务商
 
-### 🤖 AI 增强功能
-- 集成 Google Gemini AI
-- 智能食材分类
-- 图片识别食材
-- AI 生成个性化菜谱
-- **优雅降级**: 无 API Key 时自动使用 Mock 数据
+### 🔑 获取API Key
 
-## 🚀 快速开始
+- **Gemini**: [Google AI Studio](https://aistudio.google.com/apikey)
+- **OpenAI**: [OpenAI Platform](https://platform.openai.com/api-keys)
+- **DeepSeek**: [DeepSeek Platform](https://platform.deepseek.com/)
+- **智谱AI**: [智谱开放平台](https://open.bigmodel.cn/)
 
-### 前置要求
-- Node.js (推荐 v18 或更高版本)
-- npm 或 yarn
+> ⚠️ **注意**: API Key存储在浏览器的localStorage中,不会被提交到代码库。请妥善保管你的API Key。
 
-### 安装步骤
-
-1. **克隆项目**
-   ```bash
-   git clone https://github.com/hermitong/Refrigee.git
-   cd Refrigee
-   ```
-
-2. **安装依赖**
-   ```bash
-   npm install
-   ```
-
-3. **启动开发服务器**
-   ```bash
-   npm run dev
-   ```
-
-4. **访问应用**
-   
-   打开浏览器访问 `http://localhost:5173`
-
-### 生产构建
+### 📦 部署
 
 ```bash
 npm run build
-npm run preview
 ```
 
-## ⚙️ 配置说明
+构建产物在`dist`目录中,可以部署到任何静态网站托管服务。
 
-### Gemini API Key (可选)
+### 🛡️ 安全提示
 
-Refrigee 支持 Google Gemini AI 增强功能。如需启用:
+- ✅ API Key仅存储在浏览器本地
+- ✅ 不会被提交到Git仓库
+- ✅ 支持多个服务商,可以随时切换
+- ✅ 未配置API时自动使用Mock AI
 
-1. 获取 Gemini API Key: [Google AI Studio](https://ai.google.dev/)
-2. 在应用的**设置页面**中配置 API Key
-3. 点击"测试连接"验证配置
+### 📚 更多信息
 
-> **注意**: 不配置 API Key 时,应用会自动使用内置的 Mock 数据,所有功能仍然可用。
-
-### 环境变量
-
-参考 [.env.example](.env.example) 文件了解可配置项。
-
-## 📁 项目结构
-
-```
-Refrigee/
-├── src/
-│   ├── components/      # React 组件
-│   │   ├── Dashboard.jsx
-│   │   ├── Inventory.jsx
-│   │   ├── Recipes.jsx
-│   │   ├── Settings.jsx
-│   │   ├── Profile.jsx
-│   │   ├── AddItemModal.jsx
-│   │   └── Layout.jsx
-│   ├── services/        # API 服务
-│   │   └── geminiService.js
-│   ├── utils/           # 工具函数
-│   │   └── aiMock.js
-│   ├── contexts/        # React Context
-│   │   └── LanguageContext.jsx
-│   ├── hooks/           # 自定义 Hooks
-│   │   └── useInventory.js
-│   ├── locales/         # 国际化
-│   │   └── zh-CN.js
-│   ├── App.jsx          # 主应用组件
-│   └── main.jsx         # 应用入口
-├── public/              # 静态资源
-├── PRD.md              # 产品需求文档
-└── DEPLOYMENT_GUIDE.md # 部署指南
-```
-
-## 🛠️ 技术栈
-
-- **框架**: React 19 + Vite
-- **样式**: Tailwind CSS 4 + Framer Motion
-- **AI**: Google Gemini API
-- **数据持久化**: localStorage
-- **构建工具**: Vite
-- **代码规范**: ESLint
-
-## 📚 文档
-
-- [产品需求文档 (PRD)](./PRD.md)
-- [部署指南](./DEPLOYMENT_GUIDE.md)
-
-## 🎯 开发路线图
-
-- [x] MVP 核心功能
-- [x] Gemini AI 集成
-- [x] 国际化支持
-- [ ] OCR 收据扫描
-- [ ] 用户认证系统
-- [ ] 云端数据同步
-- [ ] 移动端适配优化
-
-## 📄 许可证
-
-本项目仅供学习和个人使用。
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request!
+查看[实施计划](docs/implementation_plan.md)了解技术架构和详细功能说明。
 
 ---
 
-**Made with ❤️ for reducing food waste**
+## 原有功能
+
+智能冰箱管理器,帮助你:
+- 📝 记录食材库存
+- ⏰ 过期提醒
+- 🍳 AI食谱推荐
+- 🎯 减少食物浪费
+
+**技术栈**: React + Vite + TailwindCSS + AI (Gemini/OpenAI/DeepSeek等)

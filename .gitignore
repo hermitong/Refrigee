@@ -20,5 +20,15 @@ dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
+
+# Environment variables and sensitive data
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# API keys and secrets (just in case)
+**/secrets/
+**/config/secrets.*
