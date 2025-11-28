@@ -160,8 +160,8 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
                                             onChange={(e) => setQuantity(e.target.value)}
                                             className="w-full p-3 bg-gray-50 border border-gray-200 rounded-l-xl focus:ring-2 focus:ring-emerald-500 outline-none"
                                             required
-                                            min="0.1"
-                                            step="0.1"
+                                            min="0.5"
+                                            step="0.5"
                                         />
                                         <select
                                             value={unit}
@@ -187,10 +187,12 @@ export default function AddItemModal({ isOpen, onClose, onAdd }) {
                                         <option value="">选择...</option>
                                         <option value="Fruit">水果</option>
                                         <option value="Vegetable">蔬菜</option>
-                                        <option value="Dairy">乳制品</option>
                                         <option value="Meat">肉类</option>
-                                        <option value="Bakery">烘焙</option>
-                                        <option value="Pantry">储藏</option>
+                                        <option value="Dairy">乳制品</option>
+                                        <option value="Grain">谷物</option>
+                                        <option value="Beverage">饮料</option>
+                                        <option value="Snack">零食</option>
+                                        <option value="Condiment">调味品</option>
                                         <option value="Other">其他</option>
                                     </select>
                                 </div>

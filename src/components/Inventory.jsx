@@ -9,8 +9,10 @@ const CATEGORY_CONFIG = {
     Vegetable: { name: '蔬菜', emoji: '🥬', color: 'bg-green-50' },
     Meat: { name: '肉类', emoji: '🥩', color: 'bg-pink-50' },
     Dairy: { name: '乳制品', emoji: '🥛', color: 'bg-blue-50' },
-    Bakery: { name: '烘焙', emoji: '🍞', color: 'bg-yellow-50' },
-    Pantry: { name: '储藏', emoji: '🥫', color: 'bg-orange-50' },
+    Grain: { name: '谷物', emoji: '🌾', color: 'bg-yellow-50' },
+    Beverage: { name: '饮料', emoji: '🥤', color: 'bg-purple-50' },
+    Snack: { name: '零食', emoji: '🍿', color: 'bg-orange-50' },
+    Condiment: { name: '调味品', emoji: '🧂', color: 'bg-amber-50' },
     Other: { name: '其他', emoji: '📦', color: 'bg-gray-50' }
 };
 
