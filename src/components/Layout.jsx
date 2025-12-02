@@ -1,74 +1,72 @@
-import { Home, List, ChefHat, Plus, Settings } from 'lucide-react';
+import React from 'react';
 import { useTranslation } from '../contexts/LanguageContext';
+import { LayoutDashboard, Refrigerator, Plus, ChefHat, Settings } from 'lucide-react';
 
 export default function Layout({ children, activeTab, onTabChange, onAddClick }) {
     const { t } = useTranslation();
 
     return (
-        <div className="min-h-screen bg-gray-100 flex justify-center">
-            {/* Mobile Container */}
-            <div className="w-full max-w-md bg-white min-h-screen shadow-2xl relative flex flex-col">
+        <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900 justify-between max-w-sm mx-auto shadow-2xl relative overflow-hidden">
+            {/* Main Content Area */}
+            <main className="flex-grow overflow-y-auto scrollbar-hide">
+                {children}
+            </main>
 
-                {/* Main Content Area */}
-                <main className="flex-1 overflow-y-auto pb-24">
-                    {children}
-                </main>
+            {/* Bottom Navigation */}
+            <nav className="bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 px-6 py-2 flex justify-between items-center z-10">
+                <NavButton
+                    icon={LayoutDashboard}
+                    label="首页"
+                    isActive={activeTab === 'dashboard'}
+                    onClick={() => onTabChange('dashboard')}
+                />
 
-                {/* Bottom Navigation */}
-                <nav className="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-100 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50">
-                    <div className="flex justify-around items-center h-20 px-2">
-                        <NavButton
-                            icon={<Home size={24} />}
-                            label={t('nav.home')}
-                            isActive={activeTab === 'dashboard'}
-                            onClick={() => onTabChange('dashboard')}
-                        />
+                <NavButton
+                    icon={Refrigerator}
+                    label="库存"
+                    isActive={activeTab === 'inventory'}
+                    onClick={() => onTabChange('inventory')}
+                />
 
-                        <NavButton
-                            icon={<List size={24} />}
-                            label={t('nav.fridge')}
-                            isActive={activeTab === 'inventory'}
-                            onClick={() => onTabChange('inventory')}
-                        />
+                {/* Floating Action Button (Original Style) */}
+                <div className="relative -top-6">
+                    <button
+                        onClick={onAddClick}
+                        className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-emerald-200 transition-all transform hover:scale-105 bg-emerald-500 text-white"
+                    >
+                        <Plus size={28} />
+                    </button>
+                </div>
 
-                        <div className="relative -top-6">
-                            <button
-                                onClick={onAddClick}
-                                className="flex items-center justify-center w-16 h-16 bg-emerald-500 text-white rounded-full shadow-lg shadow-emerald-200 hover:bg-emerald-600 hover:scale-105 transition-all duration-200 active:scale-95"
-                            >
-                                <Plus size={32} strokeWidth={2.5} />
-                            </button>
-                        </div>
+                <NavButton
+                    icon={ChefHat}
+                    label="食谱"
+                    isActive={activeTab === 'recipes'}
+                    onClick={() => onTabChange('recipes')}
+                />
 
-                        <NavButton
-                            icon={<ChefHat size={24} />}
-                            label={t('nav.recipes')}
-                            isActive={activeTab === 'recipes'}
-                            onClick={() => onTabChange('recipes')}
-                        />
-
-                        <NavButton
-                            icon={<Settings size={24} />}
-                            label="Settings"
-                            isActive={activeTab === 'settings'}
-                            onClick={() => onTabChange('settings')}
-                        />
-                    </div>
-                </nav>
-            </div>
+                <NavButton
+                    icon={Settings}
+                    label="设置"
+                    isActive={activeTab === 'settings'}
+                    onClick={() => onTabChange('settings')}
+                />
+            </nav>
         </div>
     );
 }
 
-function NavButton({ icon, label, isActive, onClick }) {
+function NavButton({ icon: Icon, label, isActive, onClick }) {
     return (
         <button
             onClick={onClick}
-            className={`flex flex-col items-center justify-center w-16 space-y-1 transition-colors duration-200 ${isActive ? 'text-emerald-600' : 'text-gray-400 hover:text-gray-600'
+            className={`flex flex-col items-center gap-1 p-2 transition-colors ${isActive
+                    ? 'text-emerald-600'
+                    : 'text-slate-400 hover:text-slate-600 dark:text-gray-500 dark:hover:text-gray-300'
                 }`}
         >
-            {icon}
-            <span className="text-[10px] font-medium tracking-wide">{label}</span>
+            <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+            <span className="text-[10px] font-medium">{label}</span>
         </button>
     );
 }
